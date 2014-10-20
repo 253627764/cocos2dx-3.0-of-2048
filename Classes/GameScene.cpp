@@ -20,17 +20,17 @@ bool GameScene::init()
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Point origin = Director::getInstance()->getVisibleOrigin();
 
-	//ÉèÖÃ´¥ÃşÊÂ¼ş¼àÌı
+	//è®¾ç½®è§¦æ‘¸äº‹ä»¶ç›‘å¬
 	auto touchListener = EventListenerTouchOneByOne::create();
 	touchListener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
 	touchListener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
-	//¼ÓÈëÓÎÏ·±³¾°
+	//åŠ å…¥æ¸¸æˆèƒŒæ™¯
 	auto layerColorBG = LayerColor::create(Color4B(180, 170, 160, 255));
 	this->addChild(layerColorBG);
 
-	//´´½¨·ÖÊı
+	//åˆ›å»ºåˆ†æ•°
 	auto cardNumberTitle = LabelTTF::create("SCORE","Consolas",80);
 	cardNumberTitle->setPosition(Point(visibleSize.width/2 + 340, visibleSize.height/2 + 130));
 	addChild(cardNumberTitle);
@@ -40,27 +40,27 @@ bool GameScene::init()
 	cardNumberTTF->setPosition(Point(visibleSize.width/2 + 340, visibleSize.height/2 - 100));
 	addChild(cardNumberTTF);
 
-	//´´½¨4X4¿¨Æ¬
+	//åˆ›å»º4X4å¡ç‰‡
 	createCardSprite(visibleSize);
 
-	//³õÊ¼Ê±Éú³ÉÁ½¸ö2
+	//åˆå§‹æ—¶ç”Ÿæˆä¸¤ä¸ª2
 	createCardNumber();
 	createCardNumber();
 
 	return true;
 }
 
-//¸ù¾İÆÁÄ»´óĞ¡´´½¨¿¨Æ¬
+//æ ¹æ®å±å¹•å¤§å°åˆ›å»ºå¡ç‰‡
 void GameScene::createCardSprite(Size size)
 {
-	//Çó³öµ¥Ôª¸ñµÄ¿íºÍ¸ß
+	//æ±‚å‡ºå•å…ƒæ ¼çš„å®½å’Œé«˜
 	int cardSize = (size.height - 36) / 4;
-	//»æÖÆ³ö4X4µÄµ¥Ôª¸ñ
+	//ç»˜åˆ¶å‡º4X4çš„å•å…ƒæ ¼
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			//ĞèÒªÆÁÄ»·Ö±æÂÊÊÊÅä
+			//éœ€è¦å±å¹•åˆ†è¾¨ç‡é€‚é…
 			CardSprite *card = CardSprite::createCardSprite(0, cardSize, cardSize, cardSize*i+80, cardSize*j+20);
 			cardArr[i][j] = card;
 			addChild(card);
@@ -70,8 +70,8 @@ void GameScene::createCardSprite(Size size)
 
 bool GameScene::onTouchBegan(Touch* touch, Event* event)
 {
-	//µÃµ½´¥ÃşÊ±×ø±ê
-	Point beginTouch = touch->getLocation();  //»ñÈ¡OpenGL×ø±ê£¬ÒÔ×óÏÂ½ÇÎªÔ­µã
+	//å¾—åˆ°è§¦æ‘¸æ—¶åæ ‡
+	Point beginTouch = touch->getLocation();  //è·å–OpenGLåæ ‡ï¼Œä»¥å·¦ä¸‹è§’ä¸ºåŸç‚¹
 	beginX = beginTouch.x;
 	beginY = beginTouch.y;
 
@@ -80,75 +80,83 @@ bool GameScene::onTouchBegan(Touch* touch, Event* event)
 
 void GameScene::onTouchEnded(Touch* touch, Event* event)
 {
-	//µÃµ½´¥Ãş½áÊøÊ±×ø±ê
-	Point endTouch = touch->getLocation();  //»ñÈ¡OpenGL×ø±ê£¬ÒÔ×óÏÂ½ÇÎªÔ­µã
-	//¼ÆËãÊÖÖ¸ÔÚX£¬YÒÆ¶¯µÄ¾àÀë
+	//å¾—åˆ°è§¦æ‘¸ç»“æŸæ—¶åæ ‡
+	Point endTouch = touch->getLocation();  //è·å–OpenGLåæ ‡ï¼Œä»¥å·¦ä¸‹è§’ä¸ºåŸç‚¹
+	//è®¡ç®—æ‰‹æŒ‡åœ¨Xï¼ŒYç§»åŠ¨çš„è·ç¦»
 	endX = beginX - endTouch.x;
 	endY = beginY - endTouch.y;
 	if (abs(endX) > abs(endY))
 	{
-		//Èç¹ûXÖáÒÆ¶¯µÄ¾àÀë´óÓÚYÖá£¬ÔòÊÇ×óÓÒÒÆ¶¯
+		//å¦‚æœXè½´ç§»åŠ¨çš„è·ç¦»å¤§äºYè½´ï¼Œåˆ™æ˜¯å·¦å³ç§»åŠ¨
 		if (endX + 5 > 0)
 		{
-			//Ïò×óÒÆ¶¯
-			doLeft();
-			createCardNumber();
+			//å‘å·¦ç§»åŠ¨
+			if (doLeft())
+			{
+				createCardNumber();
+			}
 			doCheck();
 			setScore(score);
 		}
 		else
 		{
-			//ÏòÓÒÒÆ¶¯
-			doRight();
-			createCardNumber();
+			//å‘å³ç§»åŠ¨
+			if (doRight())
+			{
+				createCardNumber();
+			}
 			doCheck();
 			setScore(score);
 		}
 	}
-	else //·ñÔòÊÇÉÏÏÂÒÆ¶¯
+	else //å¦åˆ™æ˜¯ä¸Šä¸‹ç§»åŠ¨
 	{
 		if (endY + 5 > 0)
 		{
-			//ÏòÏÂÒÆ¶¯
-			doDown();
-			createCardNumber();
+			//å‘ä¸‹ç§»åŠ¨
+			if (doDown())
+			{
+				createCardNumber();
+			}
 			doCheck();
 			setScore(score);
 		}
 		else
 		{
-			//ÏòÉÏÒÆ¶¯
-			doUp();
-			createCardNumber();
+			//å‘ä¸Šç§»åŠ¨
+			if (doUp())
+			{
+				createCardNumber();
+			}
 			doCheck();
 			setScore(score);
 		}
 	}
 }
 
-//´´½¨Éú³ÉËæ»ú¿¨Æ¬
+//åˆ›å»ºç”Ÿæˆéšæœºå¡ç‰‡
 void GameScene::createCardNumber()
 {
-	int i = CCRANDOM_0_1() * 4;        //Éú³É0~3Ëæ»úÊı
+	int i = CCRANDOM_0_1() * 4;        //ç”Ÿæˆ0~3éšæœºæ•°
 	int j = CCRANDOM_0_1() * 4;
 
-	//ÅĞ¶ÏÊÇ·ñÒÑ¾­´æÔÚ
+	//åˆ¤æ–­æ˜¯å¦å·²ç»å­˜åœ¨
 	if (cardArr[i][j]->getNumber() > 0)
 	{
 		createCardNumber();
 	}
 	else
 	{
-		//2ºÍ4µÄÉú³ÉÂÊÎª9:1
+		//2å’Œ4çš„ç”Ÿæˆç‡ä¸º9:1
 		cardArr[i][j]->setNumber(CCRANDOM_0_1()*10 < 1 ? 4 : 2);
 	}
 }
 
-//¼ì²âÓÎÏ·ÊÇ·ñ½áÊø
+//æ£€æµ‹æ¸¸æˆæ˜¯å¦ç»“æŸ
 void GameScene::doCheck()
 {
 	bool isGameOver = true;
-	//ÅĞ¶ÏÃ¿Ò»¸öµÄÉÏÏÂ×óÓÒºÍ×Ô¼ºÊÇ·ñÏàÍ¬
+	//åˆ¤æ–­æ¯ä¸€ä¸ªçš„ä¸Šä¸‹å·¦å³å’Œè‡ªå·±æ˜¯å¦ç›¸åŒ
 	for (int y = 0; y < 4; y++)
 	{
 		for (int x = 0; x < 4; x++)
@@ -165,15 +173,15 @@ void GameScene::doCheck()
 	}
 	if (isGameOver)
 	{
-		//ÖØÀ´
+		//é‡æ¥
 		Director::getInstance()->replaceScene(TransitionFade::create(1, GameScene::createScene()));
 	}
 }
 
-//×ó»¬¶¯
+//å·¦æ»‘åŠ¨
 bool GameScene::doLeft()
 {
-	//ÅĞ¶ÏÓĞÃ»ÓĞ·¢ÉúÒÆ¶¯
+	//åˆ¤æ–­æœ‰æ²¡æœ‰å‘ç”Ÿç§»åŠ¨
 	bool isMove = false;
 	for (int y = 0; y < 4; y++)
 	{
@@ -195,7 +203,7 @@ bool GameScene::doLeft()
 						 cardArr[x][y]->setNumber(cardArr[x][y]->getNumber() * 2);
 						 cardArr[x1][y]->setNumber(0);
 
-						 //¸Ä±ä·ÖÊı
+						 //æ”¹å˜åˆ†æ•°
 						 score += cardArr[x][y]->getNumber();
 						 isMove = true;
 					}
@@ -208,10 +216,10 @@ bool GameScene::doLeft()
 	return isMove;
 }
 
-//ÓÒ»¬¶¯
+//å³æ»‘åŠ¨
 bool GameScene::doRight()
 {
-	//ÅĞ¶ÏÓĞÃ»ÓĞ·¢ÉúÒÆ¶¯
+	//åˆ¤æ–­æœ‰æ²¡æœ‰å‘ç”Ÿç§»åŠ¨
 	bool isMove = false;
 	for (int y = 0; y < 4; y++)
 	{
@@ -232,7 +240,7 @@ bool GameScene::doRight()
 					{
 						cardArr[x][y]->setNumber(cardArr[x][y]->getNumber() * 2);
 						cardArr[x1][y]->setNumber(0);
-						//¸Ä±ä·ÖÊı
+						//æ”¹å˜åˆ†æ•°
 						score += cardArr[x][y]->getNumber();
 						isMove = true;
 					}
@@ -245,10 +253,10 @@ bool GameScene::doRight()
 	return isMove;
 }
 
-//ÉÏ»¬¶¯
+//ä¸Šæ»‘åŠ¨
 bool GameScene::doUp()
 {
-	//ÅĞ¶ÏÓĞÃ»ÓĞ·¢ÉúÒÆ¶¯
+	//åˆ¤æ–­æœ‰æ²¡æœ‰å‘ç”Ÿç§»åŠ¨
 	bool isMove = false;
 	for (int x = 0; x < 4; x++)
 	{
@@ -269,7 +277,7 @@ bool GameScene::doUp()
 					{
 						cardArr[x][y]->setNumber(cardArr[x][y]->getNumber() * 2);
 						cardArr[x][y1]->setNumber(0);
-						//¸Ä±ä·ÖÊı
+						//æ”¹å˜åˆ†æ•°
 						score += cardArr[x][y]->getNumber();
 						isMove = true;
 					}
@@ -282,10 +290,10 @@ bool GameScene::doUp()
 	return isMove;
 }
 
-//ÏÂ»¬¶¯
+//ä¸‹æ»‘åŠ¨
 bool GameScene::doDown()
 {
-	//ÅĞ¶ÏÓĞÃ»ÓĞ·¢ÉúÒÆ¶¯
+	//åˆ¤æ–­æœ‰æ²¡æœ‰å‘ç”Ÿç§»åŠ¨
 	bool isMove = false;
 	for (int x = 0; x < 4; x++)
 	{
@@ -306,7 +314,7 @@ bool GameScene::doDown()
 					{
 						cardArr[x][y]->setNumber(cardArr[x][y]->getNumber() * 2);
 						cardArr[x][y1]->setNumber(0);
-						//¸Ä±ä·ÖÊı
+						//æ”¹å˜åˆ†æ•°
 						score += cardArr[x][y]->getNumber();
 						isMove = true;
 					}
@@ -319,7 +327,7 @@ bool GameScene::doDown()
 	return isMove;
 }
 
-//ÉèÖÃ·ÖÊı
+//è®¾ç½®åˆ†æ•°
 void GameScene::setScore(int score)
 {
 	cardNumberTTF->setString(__String::createWithFormat("%i",score)->getCString());
